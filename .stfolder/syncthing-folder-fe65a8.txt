@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: hpl5a-pcyuh
+created: 2026-03-14T22:18:03+01:00
