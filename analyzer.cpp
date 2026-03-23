@@ -59,7 +59,6 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 std::cout<<"==>";
                 std::cin>>input;
                 node_position=variable_position[node_name];
-
                 if (input=="name")
                 {
                     std::cout<<"==>"<<node_name<<std::endl;
