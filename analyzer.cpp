@@ -124,7 +124,6 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                         std::cout<<var[i].name<<"|";
                     }
                     std::cout<<std::endl;
-                    
                 }
                 else if (input=="values")
                 {
