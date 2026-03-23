@@ -75,11 +75,17 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 else if (input=="parents")
                 {
                     std::cout<<"==>";
+                    if (var[node_position].parents.size()==0)
+                    {
+                        std::cout<<"il nodo non ha parenti"<<std::endl;
+                    }
+                    else{
                     for (size_t i = 0; i < var[node_position].parents.size(); i++)
                     {
                         std::cout<<"|"<<var[node_position].parents[i];
                     }
                     std::cout<<"|"<<std::endl; 
+                    }   
                 }
                 else if (input=="probability")
                 {
