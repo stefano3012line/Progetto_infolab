@@ -35,8 +35,10 @@ std::vector<std::vector<int>> line_to_parents_id(variable node,std::unordered_ma
 void reader(std::vector<variable> var,std::unordered_map<std::string,int> variable_position){//permette di accedere agevolmente alle caratteristiche di un network e continua a runnare il codice fino a comando di chiusura
     bool running = true;
     int node_position;
+    double total_probability=0;
     while (running)
-    {       std::cout<<"==>";
+    { 
+            std::cout<<"==>";
             std::string input,node_name;
             std::cin>>input;
             if (input=="help")
@@ -89,12 +91,15 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 }
                 else if (input=="probability")
                 {
+                    total_probability=0;
                     std::cout<<"==>";
                     for (size_t i = 0; i < var[node_position].probabilty.size(); i++)
                     {
                         std::cout<<"|"<<var[node_position].probabilty[i];
+                        total_probability+=var[node_position].probabilty[i];
                     }
-                    std::cout<<"|"<<std::endl; 
+                    std::cout<<"|"<<std::endl;
+                    std::cout<<"==>"<<"la somma delle probabilita' marginalizzate e':"<<total_probability<<std::endl;
                 }
                 else if (input=="cpt")
                 {
@@ -190,18 +195,21 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 {
                     for (size_t i = 0; i < var.size(); i++)
                     {   
+                        total_probability=0;
                         std::cout<<"==>"<< var[i].name + ":";
                         if (var[i].probabilty.size() == 0)
                         {
-                            std::cout<<"non ho calcolato la probabilità";
+                            std::cout<<"non ho calcolato la probabilita'";
                         }
                         else{
                             for (size_t j = 0; j < var[i].probabilty.size(); j++)
                             {
                                 std::cout<< var[i].probabilty[j]<<",";
+                                total_probability+=var[i].probabilty[j];
                             }    
                         }
                         std::cout<<std::endl;
+                        std::cout<<"==>"<<"la somma delle probabilita' marginalizzate e':"<<total_probability<<std::endl;
                     }           
                 }
                 else if (input=="number")
@@ -274,4 +282,3 @@ int main(){
     return 0;
 }
 //aggiungere runtime
-//add normalization test
