@@ -268,11 +268,6 @@ std::vector<variable> marginalizer(std::vector<variable> var){//funzione che cal
 }
 
 
-
-
-
-
-
 ///////main to test analyzer
 int main(){
     std::string filename;
