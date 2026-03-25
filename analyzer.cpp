@@ -240,7 +240,6 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                                 std::cout<<var[i].cpt[j][k]<<",";               
                             }
                             std::cout<<std::endl;
-                            
                         }
                         std::cout<<std::endl;                        
                     }
@@ -307,7 +306,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){//funzione che cal
                         anchestor_config_probability*=var[
                             variable_position[
                                 var[i].parents[parent_number]
-                            ]].probabilty[line_id[line][parent_number]];
+                            ]].probabilty[line_id[line][parent_number]];//questa linea serve a risalire alle specifiche probabilità marginalizzate dei genitori
                     }
                     value+=var[i].cpt[line][t]*anchestor_config_probability;
                 }
