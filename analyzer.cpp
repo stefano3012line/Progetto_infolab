@@ -32,6 +32,23 @@ std::vector<std::vector<int>> line_to_parents_id(variable node,std::unordered_ma
     return line_to_parents_id_map;//l'elemento i esimo del vettore corrisponde alla configurazione dei genitori della linea numero i   
 }
 
+
+std::vector<double> conditional_probability(variable node,std::vector<int> parent_configuration,std::unordered_map<std::string,int> variable_position,std::vector<variable> var){
+    int line_number=0,parent_value=0;
+    for (size_t i = 0; i < node.parents.size(); i++)//trovo la linea della cpt corrispondente alla configurazione dei genitori data in input
+    {
+        parent_value=parent_configuration[i];
+        for (size_t j = i+1; j < node.parents.size(); j++)//produttoria per eseguire il conteggio multibase al contrario e trovare la linea corretta della cpt
+        {
+            parent_value*=var[variable_position[node.parents[j]]].values.size();
+        }
+        
+        line_number+=parent_value;
+    }
+    return node.cpt[line_number];
+}
+
+
 void reader(std::vector<variable> var,std::unordered_map<std::string,int> variable_position){//permette di accedere agevolmente alle caratteristiche di un network e continua a runnare il codice fino a comando di chiusura
     bool running = true;
     int node_position;
@@ -44,7 +61,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
             if (input=="help")
             {
                 std::cout<<"==>";
-                std::cout<<"comandi disponibili:help,stop,node(name,values,parents,cpt,probability),all(name,values,parents,cpt,probability,number)"<<std::endl;
+                std::cout<<"comandi disponibili:help,stop,node(name,values,parents,cpt,probability,conditional),all(name,values,parents,cpt,probability,number)"<<std::endl;
             }
             else if (input=="stop")
             {
@@ -60,7 +77,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 std::cout<<"inserire comando da applicare al nodo"<<std::endl;
                 std::cout<<"==>";
                 std::cin>>input;
-                node_position=variable_position[node_name];
+                node_position=variable_position[node_name];//posizione del nodo nel vettore dei nodi
                 if (input=="name")
                 {
                     std::cout<<"==>"<<node_name<<std::endl;
@@ -114,6 +131,44 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                             
                         }
                 }
+                ////////////////////////////comando per calcolare la probabilità condizionata di un nodo dato una certa configurazione dei suoi parenti
+                else if (input=="conditional")
+                {
+                    bool valid_configuration=false;
+                    std::vector<int> parent_configuration;
+                    std::string parent_value;
+                    for (size_t i = 0; i < var[node_position].parents.size(); i++)
+                    {
+                        valid_configuration=false;
+                        while (!valid_configuration)//chiedo di inserire la configurazione dei genitori finché non è valida
+                        {
+                            std::cout<<"==>"<<"inserire valore del genitore '"<<var[node_position].parents[i]<<"'"<<std::endl;
+                            std::cout<<"==>";
+                            std::cin>>parent_value;
+                            for (size_t j = 0; j < var[variable_position[var[node_position].parents[i]]].values.size(); j++)//controllo che il valore inserito sia valido altrimenti chiedo di riinserirlo
+                            {
+                                if (parent_value == var[variable_position[var[node_position].parents[i]]].values[j])//itero sui possibili valori del genitore j
+                                {
+                                    parent_configuration.push_back(j);
+                                    valid_configuration=true;
+                                    break;
+                                }
+                            }
+                            if(!valid_configuration)
+                            {
+                                std::cout<<"==>"<<"valore del genitore '"<<var[node_position].parents[i]<<"' inserito non valido, riprovare"<<std::endl;
+                            }
+                        }
+                    }
+                    std::vector<double> result=conditional_probability(var[node_position],parent_configuration,variable_position,var);
+                    std::cout<<"==>"<<"la probabilita' condizionata di '"<<var[node_position].name<<"' e':"<<std::endl;
+                    for (size_t i = 0; i < result.size(); i++)
+                    {
+                        std::cout<<"|"<<result[i];
+                    }
+                    std::cout<<"|"<<std::endl; 
+                }
+                ///////////////////////////////////////////////////
                 else{
                     std::cout<<"==>";
                     std::cout<<"comando '"<<"node."<<input<<"'"<<" sconosciuto, digitare 'help' per una lista dei comandi disponibili"<<std::endl;
@@ -229,7 +284,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
     
 }
 std::vector<variable> marginalizer(std::vector<variable> var){//funzione che calcola la probabilità marginalizzata di ogni nodo a partire da un vettore di nodi ordinato topologicamente CONTROLLARE SE é GIA' STATO MARGINALIZZATO
-    std::unordered_map<std::string,int> variable_position ={};
+    std::unordered_map<std::string,int> variable_position ={};//mappa che associa a ogni nome la sua posizione nel vettore dei nodi
     double value=0,anchestor_config_probability=1;
     for (size_t i = 0; i < var.size(); i++)//creo un unordered map con chiave il nome della variabile e contenuto la posizione nel vettore dei nodi
     {
