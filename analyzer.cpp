@@ -98,8 +98,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                         std::cout<<"|"<<var[node_position].probabilty[i];
                         total_probability+=var[node_position].probabilty[i];
                     }
-                    std::cout<<"|"<<std::endl;
-                    std::cout<<"==>"<<"la somma delle probabilita' marginalizzate e':"<<total_probability<<std::endl;
+                    std::cout<<"| "<<"somma:"<<total_probability<<std::endl;
                 }
                 else if (input=="cpt")
                 {
@@ -208,8 +207,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                                 total_probability+=var[i].probabilty[j];
                             }    
                         }
-                        std::cout<<std::endl;
-                        std::cout<<"==>"<<"la somma delle probabilita' marginalizzate e':"<<total_probability<<std::endl;
+                        std::cout<<" somma:"<<total_probability<<std::endl;
                     }           
                 }
                 else if (input=="number")
@@ -268,12 +266,5 @@ std::vector<variable> marginalizer(std::vector<variable> var){//funzione che cal
 }
 
 
-///////main to test analyzer
-int main(){
-    std::string filename;
-    std::cout<<"==>"<<"inserire il file da analizzare"<<std::endl<<"==>";
-    std::cin>>filename;
-    std::vector<variable> O_var = marginalizer(node_sort(read_var((filename))));    
-    return 0;
-}
-//aggiungere runtime
+
+
