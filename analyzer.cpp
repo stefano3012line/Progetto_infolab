@@ -423,19 +423,30 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
                     double configuration_probability=1;
                     for (size_t B = 0; B < O_var_necessary_nodes.size(); B++)
                     {
+
                         for (size_t C = 0; C < O_var_necessary_nodes[B].parents.size(); C++)
                         {
                             nodes_parents_configuration.push_back(configurations[A][necessary_variable_position[O_var_necessary_nodes[B].parents[C]]]);//creo un vettore che contiene la configurazione dei genitori di uno specifico nodo
                         }
                         //aggiungi un if per controllare se il nodo in questione è quello che sto marginalizzando e in quel caso non prendere la configurazione dei genitori ma specificare il valore del nodo che sto marginalizzando in questa iterazione
-                        int D = configurations[A][necessary_variable_position[O_var_necessary_nodes[B].name]];//prendo il valore del nodo in questione nella configurazione A
-                        configuration_probability*=conditional_probability(O_var_necessary_nodes[B],configurations[A],variable_position,var)[D];
+                        int D;//prendo il valore del nodo in questione nella configurazione A
+
+                        if (O_var_necessary_nodes[B].name == var[i].name)
+                        {
+                            D = t; // 
+                        }
+                        else
+                        {
+                            D = configurations[A][necessary_variable_position[O_var_necessary_nodes[B].name]];
+                        }
+                        configuration_probability*=conditional_probability(O_var_necessary_nodes[B],nodes_parents_configuration,variable_position,var)[D];
+                        nodes_parents_configuration.clear();////TOGLI QUESTA MERDA CHE E' COMPLESSITA N
                     }
                     value+=configuration_probability;
-                    nodes_parents_configuration.clear();
                 }//per ora non sto specificando il valore del nodo che sto marginalizzando
 
-
+                    var[i].probabilty.push_back(value);
+                    value=0;
 
 
 
@@ -466,19 +477,9 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
                 value=0;
 
 */
-
-
-
-
-
-
-
-
-
-
-
             }
         }
+        std::cout<<"==>"<<"nodi caratterizzati:"<<i+1<<" su "<<var.size()<<" ("<<((i+1)*100)/var.size()<<"%)"<<std::endl;
     }
     reader(var,variable_position);   
     return var;
@@ -487,3 +488,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
 //mi sputa fuori il vettore di nodi ma con un nodo marginalizzato
 
 
+
+//////testare  il corretto funzionamento del codice
+
+/////ottimizzare il processo si marginalizzazione (posso fare una memoization per le combinazioni in modo tale da calcolarli una volta sola)
