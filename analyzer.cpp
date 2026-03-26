@@ -459,24 +459,6 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
 
 
 
-/*
-                int line=0;//linea ed elemento della linea di cpt
-                for (size_t line = 0; line < var[i].cpt.size(); line++)//itero sulle linee della cpt
-                {
-                    anchestor_config_probability = 1;
-                    for (size_t parent_number = 0; parent_number < var[i].parents.size(); parent_number++)//itero sui parenti
-                    {
-                        anchestor_config_probability*=var[
-                            variable_position[
-                                var[i].parents[parent_number]
-                            ]].probabilty[line_id[line][parent_number]];//questa linea serve a risalire alle specifiche probabilità marginalizzate dei genitori
-                    }
-                    value+=var[i].cpt[line][t]*anchestor_config_probability;
-                }
-                var[i].probabilty.push_back(value);
-                value=0;
-
-*/
             }
         }
         std::cout<<"==>"<<"nodi caratterizzati:"<<i+1<<" su "<<var.size()<<" ("<<((i+1)*100)/var.size()<<"%)"<<std::endl;
