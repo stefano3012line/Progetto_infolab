@@ -286,6 +286,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
 
 std::vector<variable> marginalizer(std::vector<variable> var){//completamente sbagliato mannaggia al clero
     std::unordered_map<std::string,int> variable_position ={};//mappa che associa a ogni nome la sua posizione nel vettore dei nodi
+    std::vector<int> config(var.size(), 0);//vettore che contiene le configurazioni dei nodi
     double value=0,anchestor_config_probability=1;
     for (size_t i = 0; i < var.size(); i++)//creo un unordered map con chiave il nome della variabile e contenuto la posizione nel vettore dei nodi
     {
@@ -299,13 +300,61 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
         else{//bisogna rielaborare da qui
             for (size_t t = 0; t < var[i].values.size(); t++)//itero sui valori che può assumere il nodo
             {
+               /*
+                double value = 0.0;
+
+                // Loop multibase su tutte le configurazioni
+                while (true) {
+                    // Verifico se l'evento del nodo in questa configurazione è quello che sto marginalizzando
+                    if (config[variable_position[var[i].name]] == t) {
+                        double joint = 1.0;
+                        for (size_t j = 0; j < var.size(); j++) {
+                            std::vector<int> parent_config;
+                            for (const auto& pname : var[j].parents)
+                                parent_config.push_back(config[variable_position[pname]]);
+                            joint *= conditional_probability(var[j], parent_config, variable_position, var)[config[j]];
+                        }
+                        value += joint;
+                    }
+
+                    // Incremento multibase della configurazione
+                    int A = var.size() - 1;
+                    while (A >= 0) {
+                        if (++config[A] < var[A].values.size())
+                            break;
+                        config[A] = 0;
+                        A--;
+                    }
+                    if (A < 0) break; // tutte le configurazioni esplorate
+                }
+
+                var[i].probabilty.push_back(value);
+*/
 
 
 
 
 
+/*
+
+                int line=0;//linea ed elemento della linea di cpt
+                for (size_t line = 0; line < var[i].cpt.size(); line++)//itero sulle linee della cpt
+                {
+                    anchestor_config_probability = 1;
+                    for (size_t parent_number = 0; parent_number < var[i].parents.size(); parent_number++)//itero sui parenti
+                    {
+                        anchestor_config_probability*=var[
+                            variable_position[
+                                var[i].parents[parent_number]
+                            ]].probabilty[line_id[line][parent_number]];//questa linea serve a risalire alle specifiche probabilità marginalizzate dei genitori
+                    }
+                    value+=var[i].cpt[line][t]*anchestor_config_probability;
+                }
+                var[i].probabilty.push_back(value);
+                value=0;
 
 
+*/
 
 
 
@@ -367,23 +416,6 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
                     previously_added_necessary_nodes=just_added_necessary_nodes;
                     just_added_necessary_nodes.clear();
                 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 //genero un vettore ordinato di nodi necessari a calcolare la probabilità marginalizzata
                 std::vector<variable> var_necessary_nodes,O_var_necessary_nodes;//vettore che contiene solo i nodi necessari al calcolo della probabilità marginalizzata
                 for (size_t j = 0; j < necessary_nodes.size(); j++)
@@ -447,16 +479,6 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
 
                     var[i].probabilty.push_back(value);
                     value=0;
-
-
-
-
-
-
-
-
-
-
 
 
             }
