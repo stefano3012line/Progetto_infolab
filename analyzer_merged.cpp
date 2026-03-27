@@ -291,13 +291,13 @@ std::vector<variable> marginalizer(std::vector<variable> var){
 
     for (size_t i = 0; i < var.size(); i++){
 
-        if (var[i].parents.size() == 0){
-            // Nodo radice: la marginale è già la CPT
+        if (var[i].parents.size() == 0){//nel caso di nodi senza parenti la probabilità è data direttamente dalla cpt
+            
             var[i].probabilty = var[i].cpt[0];
 
         } else {
 
-            // --- STEP 1: trova tutti gli antenati necessari (OBROBRIO) ---
+            //backpropagation per trovare i nodi necessari al calcolo della probabilità marginale del nodo i
             std::vector<std::string> necessary_nodes,
                                     previously_added_necessary_nodes,
                                     just_added_necessary_nodes,
@@ -336,25 +336,28 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                 just_added_necessary_nodes.clear();
             }
 
-            // --- STEP 2: costruisce il sottografo ordinato topologicamente ---
+            
+            
+            
+            //costruzzione del vettore di nodi ordinato toplogicamente
             std::vector<variable> var_necessary_nodes, O_var_necessary_nodes;
             for (size_t j = 0; j < necessary_nodes.size(); j++)
                 var_necessary_nodes.push_back(var[variable_position[necessary_nodes[j]]]);
             var_necessary_nodes.push_back(var[i]); // aggiungo il nodo corrente
             O_var_necessary_nodes = node_sort(var_necessary_nodes);
 
-            // mappa nome -> indice nel sottografo
+            //mappatura nome==>indice del nodo nel vettore dei nodi necessari
             std::unordered_map<std::string,int> sub_position;
             for (size_t j = 0; j < O_var_necessary_nodes.size(); j++)
                 sub_position[O_var_necessary_nodes[j].name] = j;
 
             int node_sub_idx = sub_position[var[i].name]; // indice del nodo corrente nel sottografo
 
-            // --- STEP 3: joint sul sottografo ---
+            //calcolo della joint_probability sul sottografo 
             std::vector<int> sub_config(O_var_necessary_nodes.size(), 0);
 
             for (size_t t = 0; t < var[i].values.size(); t++){
-                double value = 0.0;
+                double value = 0;
                 std::fill(sub_config.begin(), sub_config.end(), 0); // reset per ogni valore di t
 
                 while (true){
@@ -363,7 +366,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                         double joint = 1.0;
                         for (size_t B = 0; B < O_var_necessary_nodes.size(); B++){
                             std::vector<int> parent_config;
-                            for (const auto& pname : O_var_necessary_nodes[B].parents)
+                            for (const auto& pname : O_var_necessary_nodes[B].parents)//itero sui nomi dei genitori del nodo B
                                 parent_config.push_back(sub_config[sub_position[pname]]);
                             joint *= conditional_probability(
                                 O_var_necessary_nodes[B], parent_config, variable_position, var
@@ -372,9 +375,9 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                         value += joint;
                     }
 
-                    // incremento multibase su sub_config
+                    // incremento multibase su sub_config vettore di configurazione del sottografo
                     int A = O_var_necessary_nodes.size() - 1;
-                    while (A >= 0){
+                    while (A >= 0){//esploro tutte le configurazioni dei nodi necessari
                         if (++sub_config[A] < (int)O_var_necessary_nodes[A].values.size())
                             break;
                         sub_config[A] = 0;
