@@ -1,6 +1,6 @@
 #include "analyzer.hpp"
 
-std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string> node_parents, std::unordered_map<std::string,int> variable_position, std::vector<variable> var){
+std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string>& node_parents, std::unordered_map<std::string,int>& variable_position, std::vector<variable>& var){
     std::vector<std::vector<int>> line_to_parents_id_map;
     std::vector<int> vec(node_parents.size(), 0);
     bool step_done = false;
@@ -28,7 +28,7 @@ std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string> node_p
 }
 
 
-std::vector<double> conditional_probability(variable node, std::vector<int> parent_configuration, std::unordered_map<std::string,int> variable_position, std::vector<variable> var){
+std::vector<double> conditional_probability(variable& node, std::vector<int>& parent_configuration, std::unordered_map<std::string,int>& variable_position, std::vector<variable>& var){
     int line_number = 0, parent_value = 0;
     for (size_t i = 0; i < node.parents.size(); i++){
         parent_value = parent_configuration[i];
@@ -107,10 +107,10 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 {
                     total_probability=0;
                     std::cout<<"==>";
-                    for (size_t i = 0; i < var[node_position].probabilty.size(); i++)
+                    for (size_t i = 0; i < var[node_position].probability.size(); i++)
                     {
-                        std::cout<<"|"<<var[node_position].probabilty[i];
-                        total_probability+=var[node_position].probabilty[i];
+                        std::cout<<"|"<<var[node_position].probability[i];
+                        total_probability+=var[node_position].probability[i];
                     }
                     std::cout<<"| "<<"somma:"<<total_probability<<std::endl;
                 }
@@ -247,15 +247,15 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                     {   
                         total_probability=0;
                         std::cout<<"==>"<< var[i].name + ":";
-                        if (var[i].probabilty.size() == 0)
+                        if (var[i].probability.size() == 0)
                         {
                             std::cout<<"non ho calcolato la probabilita'";
                         }
                         else{
-                            for (size_t j = 0; j < var[i].probabilty.size(); j++)
+                            for (size_t j = 0; j < var[i].probability.size(); j++)
                             {
-                                std::cout<< var[i].probabilty[j]<<",";
-                                total_probability+=var[i].probabilty[j];
+                                std::cout<< var[i].probability[j]<<",";
+                                total_probability+=var[i].probability[j];
                             }    
                         }
                         std::cout<<" somma:"<<total_probability<<std::endl;
@@ -293,7 +293,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
 
         if (var[i].parents.size() == 0){//nel caso di nodi senza parenti la probabilità è data direttamente dalla cpt
             
-            var[i].probabilty = var[i].cpt[0];
+            var[i].probability = var[i].cpt[0];
 
         } else {
 
@@ -386,7 +386,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                     if (A < 0) break; // tutte le configurazioni esplorate
                 }
 
-                var[i].probabilty.push_back(value);
+                var[i].probability.push_back(value);
             }
         }
 

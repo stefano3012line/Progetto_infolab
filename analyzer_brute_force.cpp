@@ -110,10 +110,10 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 {
                     total_probability=0;
                     std::cout<<"==>";
-                    for (size_t i = 0; i < var[node_position].probabilty.size(); i++)
+                    for (size_t i = 0; i < var[node_position].probability.size(); i++)
                     {
-                        std::cout<<"|"<<var[node_position].probabilty[i];
-                        total_probability+=var[node_position].probabilty[i];
+                        std::cout<<"|"<<var[node_position].probability[i];
+                        total_probability+=var[node_position].probability[i];
                     }
                     std::cout<<"| "<<"somma:"<<total_probability<<std::endl;
                 }
@@ -250,15 +250,15 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                     {   
                         total_probability=0;
                         std::cout<<"==>"<< var[i].name + ":";
-                        if (var[i].probabilty.size() == 0)
+                        if (var[i].probability.size() == 0)
                         {
                             std::cout<<"non ho calcolato la probabilita'";
                         }
                         else{
-                            for (size_t j = 0; j < var[i].probabilty.size(); j++)
+                            for (size_t j = 0; j < var[i].probability.size(); j++)
                             {
-                                std::cout<< var[i].probabilty[j]<<",";
-                                total_probability+=var[i].probabilty[j];
+                                std::cout<< var[i].probability[j]<<",";
+                                total_probability+=var[i].probability[j];
                             }    
                         }
                         std::cout<<" somma:"<<total_probability<<std::endl;
@@ -294,7 +294,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
     }
     for (size_t i = 0; i < var.size(); i++){//itero sui nodi del network
         if (var[i].parents.size() == 0){//caso senza parenti
-            var[i].probabilty = var[i].cpt[0];
+            var[i].probability = var[i].cpt[0];
         }
         else{
                 /////////////////////////////Backpropagation per trovare i nodi necessari al calcolo della probabilità marginalizzata
@@ -411,7 +411,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                     value+=configuration_probability;
                 }//per ora non sto specificando il valore del nodo che sto marginalizzando
 
-                    var[i].probabilty.push_back(value);
+                    var[i].probability.push_back(value);
                     value=0;
 
 

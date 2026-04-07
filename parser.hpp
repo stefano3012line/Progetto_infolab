@@ -17,7 +17,7 @@ class variable{
     std::vector<std::string> values;
     std::vector<std::string> parents;
     std::vector<std::vector<double>> cpt;
-    std::vector<double> probabilty;///guarda se funziona
+    std::vector<double> probability;///guarda se funziona
     //chiedere il significato della riga sotto
     variable(std::string& name,std::vector<std::string>& values,std::vector<std::string>& parents,std::vector<std::vector<double>> cpt):name(name),values(values),parents(parents),cpt(cpt){}
     variable(std::string& name):name(name){}

@@ -1,6 +1,6 @@
 #include "analyzer.hpp"
 
-std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string> node_parents,std::unordered_map<std::string,int> variable_position,std::vector<variable> var){//funzione per fare il conteggio multibase necessario a collegare la cpt a specifici valori dei genitori
+std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string>& node_parents,std::unordered_map<std::string,int>& variable_position,std::vector<variable>& var){//funzione per fare il conteggio multibase necessario a collegare la cpt a specifici valori dei genitori
     std::vector<std::vector<int>> line_to_parents_id_map;//connette una riga della cpt alla configurazione dei genitori corrispondente
     std::vector<int> vec(node_parents.size(),0);//vettore contenente le cordinate del genitore per una certa linea della cpt
     bool step_done=false;
@@ -33,7 +33,7 @@ std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string> node_p
 }
 
 
-std::vector<double> conditional_probability(variable node,std::vector<int> parent_configuration,std::unordered_map<std::string,int> variable_position,std::vector<variable> var){//trova il valore della cpt corrispondente ad una specifica configurazione dei genitori
+std::vector<double> conditional_probability(variable& node,std::vector<int>& parent_configuration,std::unordered_map<std::string,int>& variable_position,std::vector<variable>& var){//trova il valore della cpt corrispondente ad una specifica configurazione dei genitori
     int line_number=0,parent_value=0;
     for (size_t i = 0; i < node.parents.size(); i++)//trovo la linea della cpt corrispondente alla configurazione dei genitori data in input
     {
@@ -110,10 +110,10 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                 {
                     total_probability=0;
                     std::cout<<"==>";
-                    for (size_t i = 0; i < var[node_position].probabilty.size(); i++)
+                    for (size_t i = 0; i < var[node_position].probability.size(); i++)
                     {
-                        std::cout<<"|"<<var[node_position].probabilty[i];
-                        total_probability+=var[node_position].probabilty[i];
+                        std::cout<<"|"<<var[node_position].probability[i];
+                        total_probability+=var[node_position].probability[i];
                     }
                     std::cout<<"| "<<"somma:"<<total_probability<<std::endl;
                 }
@@ -250,15 +250,15 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
                     {   
                         total_probability=0;
                         std::cout<<"==>"<< var[i].name + ":";
-                        if (var[i].probabilty.size() == 0)
+                        if (var[i].probability.size() == 0)
                         {
                             std::cout<<"non ho calcolato la probabilita'";
                         }
                         else{
-                            for (size_t j = 0; j < var[i].probabilty.size(); j++)
+                            for (size_t j = 0; j < var[i].probability.size(); j++)
                             {
-                                std::cout<< var[i].probabilty[j]<<",";
-                                total_probability+=var[i].probabilty[j];
+                                std::cout<< var[i].probability[j]<<",";
+                                total_probability+=var[i].probability[j];
                             }    
                         }
                         std::cout<<" somma:"<<total_probability<<std::endl;
@@ -295,7 +295,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
     for (size_t i = 0; i < var.size(); i++){//itero sui nodi del network
         std::vector<std::vector<int>> line_id=line_to_parents_id(var[i].parents,variable_position,var);//possibile bottleneck
         if (var[i].parents.size() == 0){//caso senza parenti
-            var[i].probabilty = var[i].cpt[0];
+            var[i].probability = var[i].cpt[0];
         }
         else{//bisogna rielaborare da qui
             for (size_t t = 0; t < var[i].values.size(); t++)//itero sui valori che può assumere il nodo
@@ -312,11 +312,11 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                         anchestor_config_probability*=var[
                             variable_position[
                                 var[i].parents[parent_number]
-                            ]].probabilty[line_id[line][parent_number]];//questa linea serve a risalire alle specifiche probabilità marginalizzate dei genitori
+                            ]].probability[line_id[line][parent_number]];//questa linea serve a risalire alle specifiche probabilità marginalizzate dei genitori
                     }
                     value+=var[i].cpt[line][t]*anchestor_config_probability;
                 }
-                var[i].probabilty.push_back(value);
+                var[i].probability.push_back(value);
                 value=0;
 
 
@@ -466,7 +466,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                     value+=configuration_probability;
                 }//per ora non sto specificando il valore del nodo che sto marginalizzando
 
-                    var[i].probabilty.push_back(value);
+                    var[i].probability.push_back(value);
                     value=0;
 
 */
