@@ -1,5 +1,11 @@
 #include "analyzer.hpp"
 
+
+//calcolo della probabilità marginale di ogni nodo con un'approccio a forza bruta 
+
+
+
+
 std::vector<std::vector<int>> line_to_parents_id( std::vector<std::string>& node_parents, std::unordered_map<std::string,int>& variable_position, std::vector<variable>& var){//funzione per fare il conteggio multibase necessario a collegare la cpt a specifici valori dei genitori
     std::vector<std::vector<int>> line_to_parents_id_map;//connette una riga della cpt alla configurazione dei genitori corrispondente
     std::vector<int> vec(node_parents.size(),0);//vettore contenente le cordinate del genitore per una certa linea della cpt

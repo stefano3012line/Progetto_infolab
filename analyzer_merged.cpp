@@ -1,5 +1,10 @@
 #include "analyzer.hpp"
 
+
+//calcolo della probabilità marginale utilizzando la joint probability dei genitori su ogni configurazione dei nodi imparentati con il nodo in analisi
+
+
+
 std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string>& node_parents, std::unordered_map<std::string,int>& variable_position, std::vector<variable>& var){
     std::vector<std::vector<int>> line_to_parents_id_map;
     std::vector<int> vec(node_parents.size(), 0);
