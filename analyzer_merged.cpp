@@ -339,7 +339,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
             
             
             
-            //costruzzione del vettore di nodi ordinato toplogicamente
+            //costruzione del vettore di nodi ordinato toplogicamente
             std::vector<variable> var_necessary_nodes, O_var_necessary_nodes;
             for (size_t j = 0; j < necessary_nodes.size(); j++)
                 var_necessary_nodes.push_back(var[variable_position[necessary_nodes[j]]]);
