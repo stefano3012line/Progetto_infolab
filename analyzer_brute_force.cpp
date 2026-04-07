@@ -284,7 +284,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
 }
 
 
-std::vector<variable> marginalizer(std::vector<variable> var){//completamente sbagliato mannaggia al clero
+std::vector<variable> marginalizer(std::vector<variable> var){
     std::unordered_map<std::string,int> variable_position ={};//mappa che associa a ogni nome la sua posizione nel vettore dei nodi
     std::vector<int> config(var.size(), 0);//vettore che contiene le configurazioni dei nodi
     double value=0,anchestor_config_probability=1;
@@ -300,77 +300,8 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
         else{//bisogna rielaborare da qui
             for (size_t t = 0; t < var[i].values.size(); t++)//itero sui valori che può assumere il nodo
             {
-               /*
-                double value = 0.0;
 
-                // Loop multibase su tutte le configurazioni
-                while (true) {
-                    // Verifico se l'evento del nodo in questa configurazione è quello che sto marginalizzando
-                    if (config[variable_position[var[i].name]] == t) {
-                        double joint = 1.0;
-                        for (size_t j = 0; j < var.size(); j++) {
-                            std::vector<int> parent_config;
-                            for (const auto& pname : var[j].parents)
-                                parent_config.push_back(config[variable_position[pname]]);
-                            joint *= conditional_probability(var[j], parent_config, variable_position, var)[config[j]];
-                        }
-                        value += joint;
-                    }
-
-                    // Incremento multibase della configurazione
-                    int A = var.size() - 1;
-                    while (A >= 0) {
-                        if (++config[A] < var[A].values.size())
-                            break;
-                        config[A] = 0;
-                        A--;
-                    }
-                    if (A < 0) break; // tutte le configurazioni esplorate
-                }
-
-                var[i].probabilty.push_back(value);
-*/
-
-
-
-
-
-/*
-
-                int line=0;//linea ed elemento della linea di cpt
-                for (size_t line = 0; line < var[i].cpt.size(); line++)//itero sulle linee della cpt
-                {
-                    anchestor_config_probability = 1;
-                    for (size_t parent_number = 0; parent_number < var[i].parents.size(); parent_number++)//itero sui parenti
-                    {
-                        anchestor_config_probability*=var[
-                            variable_position[
-                                var[i].parents[parent_number]
-                            ]].probabilty[line_id[line][parent_number]];//questa linea serve a risalire alle specifiche probabilità marginalizzate dei genitori
-                    }
-                    value+=var[i].cpt[line][t]*anchestor_config_probability;
-                }
-                var[i].probabilty.push_back(value);
-                value=0;
-
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                /////////////////////////////OBROBRIO ORRIBILE CHE DEVO ASSOLUTAMENTE OTTIMIZZARE 
+                /////////////////////////////Backpropagation per trovare i nodi necessari al calcolo della probabilità marginalizzata
                 //generare un vettore di nodi necessari per il calcolo della probabilità marginalizzata
                 std::vector<std::string> necessary_nodes,//tiene di conto dei nodi necessari al calcolo della probabilità marginalizzata (nomi dei nodi)
                                         previously_added_necessary_nodes,//tiene conto dei nodi aggiunti all'ultima iterazione del ciclo (nomi dei genitori dei nodi aggiunti nell'ultima iterazione)
@@ -472,7 +403,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
                             D = configurations[A][necessary_variable_position[O_var_necessary_nodes[B].name]];
                         }
                         configuration_probability*=conditional_probability(O_var_necessary_nodes[B],nodes_parents_configuration,variable_position,var)[D];
-                        nodes_parents_configuration.clear();////TOGLI QUESTA MERDA CHE E' COMPLESSITA N
+                        nodes_parents_configuration.clear();
                     }
                     value+=configuration_probability;
                 }//per ora non sto specificando il valore del nodo che sto marginalizzando

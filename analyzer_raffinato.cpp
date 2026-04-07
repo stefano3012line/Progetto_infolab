@@ -284,7 +284,7 @@ void reader(std::vector<variable> var,std::unordered_map<std::string,int> variab
 }
 
 
-std::vector<variable> marginalizer(std::vector<variable> var){//completamente sbagliato mannaggia al clero
+std::vector<variable> marginalizer(std::vector<variable> var){
     std::unordered_map<std::string,int> variable_position ={};//mappa che associa a ogni nome la sua posizione nel vettore dei nodi
     std::vector<int> config(var.size(), 0);//vettore che contiene le configurazioni dei nodi
     double value=0,anchestor_config_probability=1;
@@ -297,7 +297,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){//completamente sb
         if (var[i].parents.size() == 0){//caso senza parenti
             var[i].probabilty = var[i].cpt[0];
         }
-        else{//bisogna rielaborare da qui
+        else{
             for (size_t t = 0; t < var[i].values.size(); t++)//itero sui valori che può assumere il nodo
             {
                 
