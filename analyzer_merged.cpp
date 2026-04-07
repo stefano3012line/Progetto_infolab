@@ -302,14 +302,17 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                                     previously_added_necessary_nodes,
                                     just_added_necessary_nodes,
                                     to_be_added_necessary_nodes;
+            std::unordered_set<std::string> necessary_nodes_set;
             bool added_node = false;
 
             for (size_t j = 0; j < var[i].parents.size(); j++)
                 to_be_added_necessary_nodes.push_back(var[variable_position[var[i].parents[j]]].name);
 
             for (size_t z = 0; z < to_be_added_necessary_nodes.size(); z++){
-                if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0){
+                //if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
+                if (necessary_nodes_set.count(to_be_added_necessary_nodes[z]) == 0){
                     necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
+                    necessary_nodes_set.insert(to_be_added_necessary_nodes[z]); // tieni il set aggiornato
                     added_node = true;
                 }
             }
@@ -324,8 +327,10 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                             var[variable_position[var[variable_position[previously_added_necessary_nodes[k]]].parents[j]]].name
                         );
                     for (size_t z = 0; z < to_be_added_necessary_nodes.size(); z++){
-                        if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0){
+                        //if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
+                        if (necessary_nodes_set.count(to_be_added_necessary_nodes[z]) == 0){
                             necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
+                            necessary_nodes_set.insert(to_be_added_necessary_nodes[z]); // tieni il set aggiornato
                             added_node = true;
                             just_added_necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
                         }
