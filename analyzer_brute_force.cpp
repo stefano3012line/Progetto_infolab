@@ -1,6 +1,6 @@
 #include "analyzer.hpp"
 
-std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string> node_parents,std::unordered_map<std::string,int> variable_position,std::vector<variable> var){//funzione per fare il conteggio multibase necessario a collegare la cpt a specifici valori dei genitori
+std::vector<std::vector<int>> line_to_parents_id( std::vector<std::string>& node_parents, std::unordered_map<std::string,int>& variable_position, std::vector<variable>& var){//funzione per fare il conteggio multibase necessario a collegare la cpt a specifici valori dei genitori
     std::vector<std::vector<int>> line_to_parents_id_map;//connette una riga della cpt alla configurazione dei genitori corrispondente
     std::vector<int> vec(node_parents.size(),0);//vettore contenente le cordinate del genitore per una certa linea della cpt
     bool step_done=false;
@@ -33,7 +33,7 @@ std::vector<std::vector<int>> line_to_parents_id(std::vector<std::string> node_p
 }
 
 
-std::vector<double> conditional_probability(variable node,std::vector<int> parent_configuration,std::unordered_map<std::string,int> variable_position,std::vector<variable> var){//trova il valore della cpt corrispondente ad una specifica configurazione dei genitori
+std::vector<double> conditional_probability( variable& node, std::vector<int>& parent_configuration, std::unordered_map<std::string,int>& variable_position, std::vector<variable>& var){//trova il valore della cpt corrispondente ad una specifica configurazione dei genitori
     int line_number=0,parent_value=0;
     for (size_t i = 0; i < node.parents.size(); i++)//trovo la linea della cpt corrispondente alla configurazione dei genitori data in input
     {
@@ -293,20 +293,19 @@ std::vector<variable> marginalizer(std::vector<variable> var){
         variable_position[var[i].name]=i;
     }
     for (size_t i = 0; i < var.size(); i++){//itero sui nodi del network
-        std::vector<std::vector<int>> line_id=line_to_parents_id(var[i].parents,variable_position,var);//possibile bottleneck
         if (var[i].parents.size() == 0){//caso senza parenti
             var[i].probabilty = var[i].cpt[0];
         }
-        else{//bisogna rielaborare da qui
-            for (size_t t = 0; t < var[i].values.size(); t++)//itero sui valori che può assumere il nodo
-            {
-
+        else{
                 /////////////////////////////Backpropagation per trovare i nodi necessari al calcolo della probabilità marginalizzata
                 //generare un vettore di nodi necessari per il calcolo della probabilità marginalizzata
                 std::vector<std::string> necessary_nodes,//tiene di conto dei nodi necessari al calcolo della probabilità marginalizzata (nomi dei nodi)
                                         previously_added_necessary_nodes,//tiene conto dei nodi aggiunti all'ultima iterazione del ciclo (nomi dei genitori dei nodi aggiunti nell'ultima iterazione)
                                         just_added_necessary_nodes,//tiene conto dei nodi aggiunti in questa iterazione (nomi dei genitori dei nodi aggiunti in questa iterazione)
                                         to_be_added_necessary_nodes;//tiene conto dei nodi che potrebbero essere aggiunti 
+
+
+                std::unordered_set<std::string> necessary_nodes_set;
                 bool added_node=false;
 
                 for (size_t j = 0; j < var[i].parents.size(); j++)//aggiungo alla lista di nodi necessari i genitori del nodo che sto marginalizzando
@@ -315,9 +314,11 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                 }
                 for (size_t z = 0; z < to_be_added_necessary_nodes.size(); z++)
                 {
-                    if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
+                    //if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
+                    if (necessary_nodes_set.count(to_be_added_necessary_nodes[z]) == 0)
                     {
                         necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
+                        necessary_nodes_set.insert(to_be_added_necessary_nodes[z]); // tieni il set aggiornato
                         added_node=true;
                     }
                 }
@@ -335,9 +336,11 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                         }
                         for (size_t z = 0; z < to_be_added_necessary_nodes.size(); z++)
                         {
-                            if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
+                            //if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
+                            if (necessary_nodes_set.count(to_be_added_necessary_nodes[z]) == 0)
                             {
                                 necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
+                                necessary_nodes_set.insert(to_be_added_necessary_nodes[z]); // tieni il set aggiornato
                                 added_node=true;
                                 just_added_necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
                             }
@@ -374,16 +377,16 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                 for (size_t j = 0; j < necessary_nodes.size(); j++)
                 {
                     necessary_variable_position[necessary_nodes[j]]=j;
-                }
-
-                
-  
-                    
+                }  
                 std::vector<std::vector<int>> configurations=line_to_parents_id(necessary_nodes,variable_position,var);//genero un vettore contenente tutte le possibili configurazioni dei nodi necessari
-                std::vector<int> nodes_parents_configuration;//vettore che contiene la configurazione dei genitori di uno specifico nodo
+            ///////////////////////////FINE BACKPROPAGATION
+
+            for (size_t t = 0; t < var[i].values.size(); t++)//itero sui valori che può assumere il nodo
+            {
                 for (size_t A=0; A < configurations.size();A++)//ciclo su tutte le configurazioni dei nodi necessari (A mi dice a quale configurazione faccio riferimento)
                 {
                     double configuration_probability=1;
+                    std::vector<int> nodes_parents_configuration;//vettore che contiene la configurazione dei genitori di uno specifico nodo
                     for (size_t B = 0; B < O_var_necessary_nodes.size(); B++)
                     {
 
@@ -420,10 +423,3 @@ std::vector<variable> marginalizer(std::vector<variable> var){
     return var;
 }
 
-//mi sputa fuori il vettore di nodi ma con un nodo marginalizzato
-
-
-
-//////testare  il corretto funzionamento del codice
-
-/////ottimizzare il processo si marginalizzazione (posso fare una memoization per le combinazioni in modo tale da calcolarli una volta sola)

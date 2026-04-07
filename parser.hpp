@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include<algorithm>
 #include<cmath>
+#include <unordered_set>
 //per ora source ed header sono nello stesso file
 //dichiaro la classe variable per benino così dopo posso giocarci sopra
 class variable{
