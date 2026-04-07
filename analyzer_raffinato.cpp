@@ -310,14 +310,14 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                         double joint = 1.0;
                         for (size_t j = 0; j < var.size(); j++) {
                             std::vector<int> parent_config;
-                            for (const auto& pname : var[j].parents)
+                            for (const auto& pname : var[j].parents)//itero sui genitori del j esimo nodo
                                 parent_config.push_back(config[variable_position[pname]]);
                             joint *= conditional_probability(var[j], parent_config, variable_position, var)[config[j]];
                         }
                         value += joint;
                     }
 
-                    // Incremento multibase della configurazione
+                    // Incremento multibase della configurazione (parto dal nodo nell'ultima posizione e conto al contrario)
                     int A = var.size() - 1;
                     while (A >= 0) {
                         if (++config[A] < var[A].values.size())
