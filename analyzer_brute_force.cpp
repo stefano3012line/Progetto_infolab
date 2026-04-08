@@ -321,7 +321,7 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                 for (size_t z = 0; z < to_be_added_necessary_nodes.size(); z++)
                 {
                     //if (std::count(necessary_nodes.begin(), necessary_nodes.end(), to_be_added_necessary_nodes[z]) == 0)
-                    if (necessary_nodes_set.count(to_be_added_necessary_nodes[z]) == 0)
+                    if (necessary_nodes_set.count(to_be_added_necessary_nodes[z]) == 0)//controllo che il nodo non sia già stato aggiunto alla lista dei nodi necessari
                     {
                         necessary_nodes.push_back(to_be_added_necessary_nodes[z]);
                         necessary_nodes_set.insert(to_be_added_necessary_nodes[z]); // tieni il set aggiornato
@@ -366,17 +366,6 @@ std::vector<variable> marginalizer(std::vector<variable> var){
                 O_var_necessary_nodes=node_sort(var_necessary_nodes);//ordino i nodi necessari in modo che se un nodo è genitore di un altro allora viene prima nell'ordinamento
 
 
-
-
-                int number_of_configurations=1;//calcolo il nemero di configurazioni dei genitori
-                for (size_t j = 0; j < O_var_necessary_nodes.size(); j++)
-                {
-                    if (O_var_necessary_nodes[j].name != var[i].name)
-                    {
-                        number_of_configurations*=O_var_necessary_nodes[j].values.size();
-                    }
-                }
-                
 
                 //genero una mappa name to id per i nodi necessari
                 std::unordered_map<std::string,int> necessary_variable_position ={};
