@@ -21,8 +21,8 @@ g++ .\builder.cpp .\parser.cpp .\analyzer_merged.cpp .\Main_bif_analyzer.cpp -o 
 g++ .\builder.cpp .\parser.cpp .\analyzer_raffinato.cpp .\Main_bif_analyzer.cpp -o main_raffinato
 ```
 
-## Utilizzo
+## Utilizzo esempio
 
 ```bash
-./main_brute_force <file.bif>
+./main_brute_force 
 ```
